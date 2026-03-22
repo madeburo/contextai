@@ -1,6 +1,6 @@
 # contextai
 
-![contextai](./contextai.webp)
+![contextai](./contextai.webp?v=2)
 
 [![npm version](https://img.shields.io/npm/v/contextai.svg)](https://www.npmjs.com/package/contextai)
 [![license](https://img.shields.io/npm/l/contextai.svg)](LICENSE)
