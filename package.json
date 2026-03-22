@@ -1,0 +1,76 @@
+{
+  "name": "contextai",
+  "version": "0.1.0",
+  "description": "Universal context engineering CLI for AI coding agents — generate AGENTS.md, CLAUDE.md, .cursorrules and more from a single context.config.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "bin": {
+    "contextai": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest --run",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "keywords": [
+    "ai",
+    "context",
+    "context-engineering",
+    "agents",
+    "llm",
+    "cli",
+    "codegen",
+    "claude",
+    "cursor",
+    "copilot",
+    "openai",
+    "agents-md",
+    "cursorrules",
+    "llms-txt",
+    "typescript",
+    "developer-tools"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/madeburo/contextai.git"
+  },
+  "homepage": "https://github.com/madeburo/contextai#readme",
+  "bugs": {
+    "url": "https://github.com/madeburo/contextai/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
+    "chokidar": "^3.6.0",
+    "commander": "^12.0.0",
+    "diff": "^5.2.0",
+    "jiti": "^1.21.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/diff": "^5.2.0",
+    "@types/node": "^20.19.37",
+    "fast-check": "^3.23.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

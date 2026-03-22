@@ -1,0 +1,45 @@
+{
+  "name": "nextjs",
+  "conventions": {
+    "code": [
+      {
+        "title": "Next.js App Router",
+        "items": [
+          "Use the App Router (app/) directory structure",
+          "Prefer Server Components by default; add 'use client' only when necessary",
+          "Co-locate page components, loading.tsx, error.tsx, and layout.tsx within route segments",
+          "Use next/image for all images to enable automatic optimization",
+          "Use next/link for client-side navigation"
+        ]
+      },
+      {
+        "title": "Data Fetching",
+        "items": [
+          "Fetch data in Server Components using async/await directly",
+          "Use React cache() to deduplicate requests within a render",
+          "Prefer fetch() with Next.js cache options over third-party data-fetching libraries in Server Components",
+          "Use SWR or React Query only in Client Components"
+        ]
+      },
+      {
+        "title": "Styling",
+        "items": [
+          "Use Tailwind CSS utility classes as the primary styling approach",
+          "Avoid inline styles except for dynamic values",
+          "Use CSS Modules for component-scoped styles when Tailwind is insufficient"
+        ]
+      }
+    ],
+    "testing": [
+      {
+        "title": "Next.js Testing",
+        "items": [
+          "Use Vitest for unit and integration tests",
+          "Use React Testing Library for component tests",
+          "Mock next/navigation hooks (useRouter, usePathname) in tests",
+          "Use Playwright for end-to-end tests"
+        ]
+      }
+    ]
+  }
+}

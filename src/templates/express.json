@@ -1,0 +1,37 @@
+{
+  "name": "express",
+  "conventions": {
+    "code": [
+      {
+        "title": "Express Application Structure",
+        "items": [
+          "Organize routes into separate router files grouped by resource",
+          "Use middleware for cross-cutting concerns: authentication, logging, error handling",
+          "Define a centralized error-handling middleware as the last app.use() call",
+          "Use express-async-errors or wrap async route handlers to propagate errors to the error handler",
+          "Validate request bodies with zod or joi before processing"
+        ]
+      },
+      {
+        "title": "Express Patterns",
+        "items": [
+          "Keep route handlers thin; delegate business logic to service functions",
+          "Return consistent JSON response shapes: { data, error, meta }",
+          "Use HTTP status codes correctly: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error",
+          "Set security headers using the helmet middleware"
+        ]
+      }
+    ],
+    "testing": [
+      {
+        "title": "Express Testing",
+        "items": [
+          "Use supertest to make HTTP requests against the Express app in tests",
+          "Mock external dependencies (databases, third-party APIs) in unit tests",
+          "Write integration tests that exercise the full request/response cycle",
+          "Use Vitest as the test runner"
+        ]
+      }
+    ]
+  }
+}

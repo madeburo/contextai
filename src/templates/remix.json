@@ -1,0 +1,37 @@
+{
+  "name": "remix",
+  "conventions": {
+    "code": [
+      {
+        "title": "Remix Route Conventions",
+        "items": [
+          "Use file-based routing in the app/routes/ directory",
+          "Export a default component, a loader function, and/or an action function from each route module",
+          "Use loader for data fetching (GET); use action for mutations (POST, PUT, DELETE)",
+          "Use the useFetcher hook for non-navigation form submissions and data reloads",
+          "Use the useLoaderData hook to access loader data in the component"
+        ]
+      },
+      {
+        "title": "Remix Data Patterns",
+        "items": [
+          "Prefer server-side data loading in loaders over client-side fetching",
+          "Use Remix's built-in Form component for progressive enhancement",
+          "Handle errors in errorBoundary exports per route",
+          "Use session storage for authentication state"
+        ]
+      }
+    ],
+    "testing": [
+      {
+        "title": "Remix Testing",
+        "items": [
+          "Use Vitest for unit tests of loaders, actions, and utilities",
+          "Use React Testing Library for component tests",
+          "Use Playwright or Cypress for end-to-end tests",
+          "Test loaders and actions as plain async functions without mounting the full app"
+        ]
+      }
+    ]
+  }
+}

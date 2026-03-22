@@ -1,0 +1,38 @@
+{
+  "name": "nestjs",
+  "conventions": {
+    "code": [
+      {
+        "title": "NestJS Module Structure",
+        "items": [
+          "Organize code into feature modules; each module owns its controller, service, and repository",
+          "Use dependency injection via constructor parameters; avoid manual instantiation",
+          "Decorate classes with @Module, @Controller, @Injectable, @Entity as appropriate",
+          "Use DTOs with class-validator decorators for request validation",
+          "Use class-transformer for serialization and deserialization"
+        ]
+      },
+      {
+        "title": "NestJS Patterns",
+        "items": [
+          "Use Guards for authentication and authorization",
+          "Use Interceptors for cross-cutting concerns like logging and response transformation",
+          "Use Pipes for input validation and transformation",
+          "Use Exception Filters to handle and format errors consistently",
+          "Prefer async/await over callbacks and raw Promises"
+        ]
+      }
+    ],
+    "testing": [
+      {
+        "title": "NestJS Testing",
+        "items": [
+          "Use NestJS testing utilities (Test.createTestingModule) for unit tests",
+          "Mock providers using jest.fn() or custom mock classes",
+          "Write e2e tests using supertest against the full NestJS app",
+          "Test each layer (controller, service, repository) in isolation"
+        ]
+      }
+    ]
+  }
+}

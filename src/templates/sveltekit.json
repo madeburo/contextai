@@ -1,0 +1,37 @@
+{
+  "name": "sveltekit",
+  "conventions": {
+    "code": [
+      {
+        "title": "SvelteKit Route Conventions",
+        "items": [
+          "Use file-based routing in the src/routes/ directory",
+          "Export load functions from +page.server.ts for server-side data fetching",
+          "Export load functions from +page.ts for universal (shared) data fetching",
+          "Use +server.ts files for API endpoints",
+          "Use +layout.svelte and +layout.server.ts for shared layout and data"
+        ]
+      },
+      {
+        "title": "Svelte Component Conventions",
+        "items": [
+          "Use Svelte stores for shared reactive state",
+          "Prefer $state and $derived runes (Svelte 5) over legacy reactive declarations",
+          "Use TypeScript in .svelte files with <script lang=\"ts\">",
+          "Keep components small and focused; extract reusable logic into .svelte.ts files"
+        ]
+      }
+    ],
+    "testing": [
+      {
+        "title": "SvelteKit Testing",
+        "items": [
+          "Use Vitest for unit tests",
+          "Use @testing-library/svelte for component tests",
+          "Use Playwright for end-to-end tests via @playwright/test",
+          "Test load functions and form actions as plain async functions"
+        ]
+      }
+    ]
+  }
+}
