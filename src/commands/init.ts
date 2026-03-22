@@ -12,6 +12,7 @@ const OUTPUT_KEYS = [
   'CLAUDE.md',
   '.github/copilot-instructions.md',
   'llms.txt',
+  '.kiro/steering',
 ] as const;
 
 export interface InitPrompts {

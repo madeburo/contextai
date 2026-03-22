@@ -16,6 +16,7 @@ Universal context engineering CLI for AI coding agents. Define your project's co
 | Cursor | `.cursorrules` |
 | GitHub Copilot | `.github/copilot-instructions.md` |
 | LLMs.txt | `llms.txt` |
+| Kiro (AWS) | `.kiro/steering/*.md` |
 | Custom | any path via config |
 
 ## Quick start
@@ -68,6 +69,7 @@ export default defineContext({
     '.cursorrules': true,
     '.github/copilot-instructions.md': true,
     'llms.txt': true,
+    '.kiro/steering': true,
   },
 });
 ```

@@ -1,6 +1,6 @@
 {
   "name": "contextai",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Universal context engineering CLI for AI coding agents — generate AGENTS.md, CLAUDE.md, .cursorrules and more from a single context.config.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

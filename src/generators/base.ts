@@ -7,6 +7,8 @@ export interface Generator {
   readonly outputKey: OutputKey;
   readonly outputPath: string;
   generate(config: ContextConfig): string;
+  /** For generators that produce multiple files. Defaults to [{path: outputPath, content: generate(config)}] */
+  generateFiles(config: ContextConfig): Array<{ path: string; content: string }>;
   write(config: ContextConfig, projectRoot: string): Promise<void>;
 }
 
@@ -41,6 +43,10 @@ export abstract class BaseGenerator implements Generator {
   abstract readonly outputKey: OutputKey;
   abstract readonly outputPath: string;
   abstract generate(config: ContextConfig): string;
+
+  generateFiles(config: ContextConfig): Array<{ path: string; content: string }> {
+    return [{ path: this.outputPath, content: this.generate(config) }];
+  }
 
   async write(config: ContextConfig, projectRoot: string): Promise<void> {
     const content = this.generate(config);

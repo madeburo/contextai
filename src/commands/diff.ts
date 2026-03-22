@@ -39,18 +39,20 @@ export async function runDiff(projectRoot: string, options?: DiffOptions): Promi
   const fileDiffs: FileDiff[] = [];
 
   for (const gen of generators) {
-    const inMemory = gen.generate(config);
-    const fullPath = path.join(projectRoot, gen.outputPath);
+    const files = gen.generateFiles(config);
+    for (const file of files) {
+      const fullPath = path.join(projectRoot, file.path);
 
-    let onDisk = '';
-    try {
-      onDisk = await fs.readFile(fullPath, 'utf-8');
-    } catch {
-      // Missing file treated as empty string — all lines will be additions
+      let onDisk = '';
+      try {
+        onDisk = await fs.readFile(fullPath, 'utf-8');
+      } catch {
+        // Missing file treated as empty string — all lines will be additions
+      }
+
+      const result = engine.diff(file.content, onDisk);
+      fileDiffs.push({ outputPath: file.path, result });
     }
-
-    const result = engine.diff(inMemory, onDisk);
-    fileDiffs.push({ outputPath: gen.outputPath, result });
   }
 
   const allInSync = fileDiffs.every((fd) => !fd.result.hasChanges);

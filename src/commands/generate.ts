@@ -6,6 +6,7 @@ import { ClaudeGenerator } from '../generators/claude.js';
 import { CursorGenerator } from '../generators/cursor.js';
 import { CopilotGenerator } from '../generators/copilot.js';
 import { LlmsTxtGenerator } from '../generators/llms-txt.js';
+import { KiroGenerator } from '../generators/kiro.js';
 import { GeneratorWriteError } from '../errors.js';
 import { BaseGenerator } from '../generators/base.js';
 import { info, success, verbose, error as logError, fmt } from '../logger.js';
@@ -55,6 +56,7 @@ export function buildGenerators(config: ContextConfig, only?: string[]): Generat
     new CursorGenerator(),
     new CopilotGenerator(),
     new LlmsTxtGenerator(),
+    new KiroGenerator(),
   ];
 
   for (const gen of builtIns) {
@@ -114,9 +116,11 @@ export async function runGenerate(
   if (dryRun) {
     info(fmt.dim('--- dry run ---'));
     for (const gen of generators) {
-      const content = gen.generate(config);
-      process.stdout.write(`\n${fmt.cyan(gen.outputPath)}:\n`);
-      process.stdout.write(content);
+      const files = gen.generateFiles(config);
+      for (const file of files) {
+        process.stdout.write(`\n${fmt.cyan(file.path)}:\n`);
+        process.stdout.write(file.content);
+      }
     }
     info(fmt.dim('\nNo files written (dry run).'));
     return { writtenFiles: [], errors: [] };

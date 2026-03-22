@@ -22,6 +22,7 @@ export interface OutputsConfig {
   '.cursorrules'?: boolean;
   '.github/copilot-instructions.md'?: boolean;
   'llms.txt'?: boolean;
+  '.kiro/steering'?: boolean;
   custom?: Array<{ path: string; generator: (config: ContextConfig) => string }>;
 }
 

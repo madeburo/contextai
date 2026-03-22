@@ -2,6 +2,7 @@ import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { DefaultConfigParser } from '../config-parser.js';
 import { DefaultTemplateRegistry } from '../template-registry.js';
+import { buildGenerators } from './generate.js';
 import { info, success, verbose, error as logError, fmt } from '../logger.js';
 import type { OutputKey } from '../types.js';
 
@@ -21,22 +22,17 @@ export interface ValidateOptions {
   configPath?: string;
 }
 
-// Expected section headers per output format
-const EXPECTED_HEADERS: Record<OutputKey, string[]> = {
+// Expected section headers per output file path
+const EXPECTED_HEADERS: Record<string, string[]> = {
   'AGENTS.md': ['## Stack', '## Architecture', '## Conventions'],
   'CLAUDE.md': ['## Stack', '## Architecture'],
   '.cursorrules': ['PROJECT:', 'STACK:', 'ARCHITECTURE:'],
   '.github/copilot-instructions.md': ['## Stack', '## Architecture', '## Conventions'],
   'llms.txt': ['## Stack', '## Links'],
+  '.kiro/steering/product.md': ['inclusion: always', '## Architecture'],
+  '.kiro/steering/tech.md': ['inclusion: always', '# Technology Stack'],
+  '.kiro/steering/conventions.md': ['inclusion: always', '# Conventions'],
 };
-
-const OUTPUT_KEYS: OutputKey[] = [
-  'AGENTS.md',
-  'CLAUDE.md',
-  '.cursorrules',
-  '.github/copilot-instructions.md',
-  'llms.txt',
-];
 
 export async function runValidate(projectRoot: string, options?: ValidateOptions): Promise<ValidateResult> {
   const errors: ValidateError[] = [];
@@ -53,53 +49,56 @@ export async function runValidate(projectRoot: string, options?: ValidateOptions
     config = registry.merge(config, config.templates);
   }
 
+  const generators = buildGenerators(config);
+
   // Get mtime of context.config.ts for freshness checks
   const configStat = await fs.stat(configPath);
   const configMtime = configStat.mtimeMs;
   let checkedCount = 0;
 
-  for (const key of OUTPUT_KEYS) {
-    if (config.outputs[key] !== true) {
-      continue;
-    }
+  for (const gen of generators) {
+    const files = gen.generateFiles(config);
 
-    checkedCount++;
-    const outputPath = key;
-    const fullPath = path.join(projectRoot, outputPath);
+    for (const file of files) {
+      checkedCount++;
+      const fullPath = path.join(projectRoot, file.path);
 
-    // 1. Existence check
-    let outputStat: Awaited<ReturnType<typeof fs.stat>> | null = null;
-    try {
-      outputStat = await fs.stat(fullPath);
-    } catch {
-      errors.push({
-        type: 'missing',
-        outputPath,
-        message: `Output file "${outputPath}" does not exist. Run "contextai generate" to create it.`,
-      });
-      continue;
-    }
-
-    // 2. Freshness check
-    if (outputStat.mtimeMs < configMtime) {
-      errors.push({
-        type: 'stale',
-        outputPath,
-        message: `Output file "${outputPath}" is older than config. Run "contextai generate" to update it.`,
-      });
-    }
-
-    // 3. Header check
-    const content = await fs.readFile(fullPath, 'utf-8');
-    const expectedHeaders = EXPECTED_HEADERS[key];
-    for (const header of expectedHeaders) {
-      if (!content.includes(header)) {
+      // 1. Existence check
+      let outputStat: Awaited<ReturnType<typeof fs.stat>> | null = null;
+      try {
+        outputStat = await fs.stat(fullPath);
+      } catch {
         errors.push({
-          type: 'missing-header',
-          outputPath,
-          header,
-          message: `Output file "${outputPath}" is missing expected section header "${header}".`,
+          type: 'missing',
+          outputPath: file.path,
+          message: `Output file "${file.path}" does not exist. Run "contextai generate" to create it.`,
         });
+        continue;
+      }
+
+      // 2. Freshness check
+      if (outputStat.mtimeMs < configMtime) {
+        errors.push({
+          type: 'stale',
+          outputPath: file.path,
+          message: `Output file "${file.path}" is older than config. Run "contextai generate" to update it.`,
+        });
+      }
+
+      // 3. Header check
+      const expectedHeaders = EXPECTED_HEADERS[file.path];
+      if (expectedHeaders) {
+        const content = await fs.readFile(fullPath, 'utf-8');
+        for (const header of expectedHeaders) {
+          if (!content.includes(header)) {
+            errors.push({
+              type: 'missing-header',
+              outputPath: file.path,
+              header,
+              message: `Output file "${file.path}" is missing expected section header "${header}".`,
+            });
+          }
+        }
       }
     }
   }

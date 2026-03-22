@@ -21,6 +21,7 @@ const OutputsConfigSchema = z.object({
   '.cursorrules': z.boolean().optional(),
   '.github/copilot-instructions.md': z.boolean().optional(),
   'llms.txt': z.boolean().optional(),
+  '.kiro/steering': z.boolean().optional(),
   custom: z.array(
     z.object({
       path: z.string(),
