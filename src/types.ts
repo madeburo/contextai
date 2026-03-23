@@ -23,6 +23,8 @@ export interface OutputsConfig {
   '.github/copilot-instructions.md'?: boolean;
   'llms.txt'?: boolean;
   '.kiro/steering'?: boolean;
+  '.windsurf/rules'?: boolean;
+  'GEMINI.md'?: boolean;
   custom?: Array<{ path: string; generator: (config: ContextConfig) => string }>;
 }
 

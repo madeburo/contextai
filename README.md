@@ -2,12 +2,15 @@
 
 ![contextai](./contextai.webp?v=2)
 
+[![Website](https://img.shields.io/badge/website-contextai.run-blue)](https://www.contextai.run)
 [![npm version](https://img.shields.io/npm/v/contextai.svg)](https://www.npmjs.com/package/contextai)
 [![license](https://img.shields.io/npm/l/contextai.svg)](LICENSE)
 [![node](https://img.shields.io/node/v/contextai.svg)](package.json)
 [![npm downloads](https://img.shields.io/npm/dm/contextai.svg)](https://www.npmjs.com/package/contextai)
 
 Universal context engineering CLI for AI coding agents. Define your project's conventions, stack, and architecture in a single `context.config.ts` file, then generate AI-readable context files for multiple tools from that single source of truth.
+
+**Website:** [www.contextai.run](https://www.contextai.run)
 
 ## Supported output targets
 
@@ -19,6 +22,8 @@ Universal context engineering CLI for AI coding agents. Define your project's co
 | GitHub Copilot | `.github/copilot-instructions.md` |
 | LLMs.txt | `llms.txt` |
 | Kiro (AWS) | `.kiro/steering/*.md` |
+| Windsurf | `.windsurf/rules/*.md` |
+| Gemini CLI / Antigravity | `GEMINI.md` |
 | Custom | any path via config |
 
 ## Quick start
@@ -40,6 +45,7 @@ contextai generate
 | `contextai init` | Interactive setup wizard |
 | `contextai generate` | Generate output files from config |
 | `contextai generate --dry-run` | Preview output without writing files |
+| `contextai generate --format json` | Output JSON IR to stdout instead of writing files |
 | `contextai validate` | Check output files are fresh and well-structured |
 | `contextai diff` | Show diff between config and on-disk outputs |
 | `contextai watch` | Watch config for changes and regenerate automatically |
@@ -72,6 +78,8 @@ export default defineContext({
     '.github/copilot-instructions.md': true,
     'llms.txt': true,
     '.kiro/steering': true,
+    '.windsurf/rules': true,
+    'GEMINI.md': true,
   },
 });
 ```
@@ -144,3 +152,7 @@ const config = await parser.load('./context.config.ts');
 ## License
 
 [MIT](LICENSE)
+
+---
+
+[www.contextai.run](https://www.contextai.run) · [GitHub](https://github.com/madeburo/contextai) · [npm](https://www.npmjs.com/package/contextai)

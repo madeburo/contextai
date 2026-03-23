@@ -54,6 +54,8 @@ const outputsConfigArb = fc.record({
   '.cursorrules': fc.boolean(),
   '.github/copilot-instructions.md': fc.boolean(),
   'llms.txt': fc.boolean(),
+  '.windsurf/rules': fc.boolean(),
+  'GEMINI.md': fc.boolean(),
 });
 
 // ---------------------------------------------------------------------------
@@ -182,6 +184,62 @@ describe('generate command — unit tests', () => {
     expect(existsSync(join(tmpDir, '.cursorrules'))).toBe(false);
   });
 
+  it('writes windsurf and gemini generators when enabled', async () => {
+    const config: ContextConfig = {
+      ...MINIMAL_CONFIG,
+      outputs: {
+        'AGENTS.md': false,
+        '.windsurf/rules': true,
+        'GEMINI.md': true,
+      },
+    };
+    writeConfig(tmpDir, config);
+
+    const result = await runGenerate(tmpDir);
+
+    expect(result.errors).toHaveLength(0);
+    expect(result.writtenFiles).toContain('.windsurf/rules');
+    expect(result.writtenFiles).toContain('GEMINI.md');
+    expect(existsSync(join(tmpDir, '.windsurf/rules/project-context.md'))).toBe(true);
+    expect(existsSync(join(tmpDir, 'GEMINI.md'))).toBe(true);
+
+    const windsurfContent = readFileSync(join(tmpDir, '.windsurf/rules/project-context.md'), 'utf-8');
+    expect(windsurfContent).toContain('trigger: always_on');
+    expect(windsurfContent).toContain('TestApp');
+
+    const geminiContent = readFileSync(join(tmpDir, 'GEMINI.md'), 'utf-8');
+    expect(geminiContent).toContain('TestApp');
+    expect(geminiContent).not.toContain('---');
+  });
+
+  it('--format json outputs JSON IR to stdout and writes nothing', async () => {
+    writeConfig(tmpDir, MINIMAL_CONFIG);
+
+    const stdoutChunks: string[] = [];
+    vi.spyOn(process.stdout, 'write').mockImplementation((chunk: unknown) => {
+      stdoutChunks.push(String(chunk));
+      return true;
+    });
+
+    const result = await runGenerate(tmpDir, { format: 'json' });
+
+    expect(result.writtenFiles).toHaveLength(0);
+    expect(result.errors).toHaveLength(0);
+
+    // No files written to disk
+    expect(existsSync(join(tmpDir, 'AGENTS.md'))).toBe(false);
+
+    const output = stdoutChunks.join('');
+    const ir = JSON.parse(output);
+    expect(ir.version).toBeDefined();
+    expect(ir.generatedAt).toBeDefined();
+    expect(ir.config).toBeDefined();
+    expect(ir.outputs).toBeInstanceOf(Array);
+    expect(ir.outputs.length).toBeGreaterThan(0);
+    expect(ir.outputs[0].path).toBeDefined();
+    expect(ir.outputs[0].content).toBeDefined();
+  });
+
   it('applies templates when config.templates is set', async () => {
     writeFileSync(
       join(tmpDir, 'context.config.ts'),
@@ -277,7 +335,7 @@ describe('generate command — property tests', () => {
             expect(result.writtenFiles).toHaveLength(0);
 
             // No output files exist on disk
-            const outputKeys = ['AGENTS.md', 'CLAUDE.md', '.cursorrules', '.github/copilot-instructions.md', 'llms.txt'];
+            const outputKeys = ['AGENTS.md', 'CLAUDE.md', '.cursorrules', '.github/copilot-instructions.md', 'llms.txt', '.windsurf/rules', 'GEMINI.md'];
             for (const key of outputKeys) {
               expect(existsSync(join(dir, key))).toBe(false);
             }

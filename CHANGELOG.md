@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-03-23
+
+### Added
+
+- Windsurf generator — outputs `.windsurf/rules/project-context.md` with YAML frontmatter `trigger: always_on` so Cascade loads context automatically in every interaction
+- Enable via `'.windsurf/rules': true` in `outputs` config
+- Gemini generator — outputs `GEMINI.md` in project root, plain markdown without frontmatter
+- Covers both Gemini CLI and Antigravity (Google); Antigravity also reads `AGENTS.md` which was already supported
+- Enable via `'GEMINI.md': true` in `outputs` config
+- `--format json` flag on `contextai generate` — outputs JSON IR to stdout instead of writing files
+- Structure: `{ version, generatedAt, config, outputs }` — useful for CI, piping, and debugging
+- Total supported targets now: CLAUDE.md, .cursorrules, AGENTS.md, .github/copilot-instructions.md, llms.txt, .kiro/steering, .windsurf/rules, GEMINI.md, and custom generators
+
 ## [0.2.0] - 2026-03-22
 
 ### Added

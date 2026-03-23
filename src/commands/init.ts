@@ -13,6 +13,8 @@ const OUTPUT_KEYS = [
   '.github/copilot-instructions.md',
   'llms.txt',
   '.kiro/steering',
+  '.windsurf/rules',
+  'GEMINI.md',
 ] as const;
 
 export interface InitPrompts {

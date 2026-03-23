@@ -27,7 +27,7 @@ export function createCli(): Command {
 
   program
     .name('contextai')
-    .description('Universal context engineering CLI for AI coding agents')
+    .description('Universal context engineering CLI for AI coding agents — https://www.contextai.run')
     .version(pkg.version, '-v, --version');
 
   program
@@ -48,16 +48,19 @@ export function createCli(): Command {
     .option('--dry-run', 'Preview output without writing files')
     .option('-c, --config <path>', 'Path to config file', 'context.config.ts')
     .option('--only <targets>', 'Generate only specific targets (comma-separated)')
+    .option('--format <format>', 'Output format: text (default) or json (JSON IR to stdout)')
     .option('-q, --quiet', 'Suppress all output except errors')
     .option('--verbose', 'Show detailed output')
-    .action(async (opts: { dryRun?: boolean; config?: string; only?: string; quiet?: boolean; verbose?: boolean }) => {
+    .action(async (opts: { dryRun?: boolean; config?: string; only?: string; format?: string; quiet?: boolean; verbose?: boolean }) => {
       try {
         applyVerbosity(opts);
         const only = opts.only ? opts.only.split(',').map(s => s.trim()) : undefined;
+        const format = opts.format === 'json' ? 'json' as const : 'text' as const;
         const result = await runGenerate(process.cwd(), {
           dryRun: opts.dryRun,
           configPath: opts.config,
           only,
+          format,
         });
         if (result.errors.length > 0) {
           process.exit(1);

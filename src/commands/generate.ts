@@ -1,4 +1,8 @@
 import * as path from 'node:path';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pkg = require('../../package.json') as { version: string };
+
 import { DefaultConfigParser } from '../config-parser.js';
 import { DefaultTemplateRegistry } from '../template-registry.js';
 import { AgentsGenerator } from '../generators/agents.js';
@@ -7,6 +11,8 @@ import { CursorGenerator } from '../generators/cursor.js';
 import { CopilotGenerator } from '../generators/copilot.js';
 import { LlmsTxtGenerator } from '../generators/llms-txt.js';
 import { KiroGenerator } from '../generators/kiro.js';
+import { WindsurfGenerator } from '../generators/windsurf.js';
+import { GeminiGenerator } from '../generators/gemini.js';
 import { GeneratorWriteError } from '../errors.js';
 import { BaseGenerator } from '../generators/base.js';
 import { info, success, verbose, error as logError, fmt } from '../logger.js';
@@ -17,11 +23,19 @@ export interface GenerateOptions {
   dryRun?: boolean;
   configPath?: string;
   only?: string[];
+  format?: 'text' | 'json';
 }
 
 export interface GenerateResult {
   writtenFiles: string[];
   errors: Array<{ outputPath: string; message: string }>;
+}
+
+export interface JsonIROutput {
+  version: string;
+  generatedAt: string;
+  config: ContextConfig;
+  outputs: Array<{ path: string; content: string }>;
 }
 
 // Custom generator adapter — extends BaseGenerator to reuse write() with path traversal protection
@@ -57,6 +71,8 @@ export function buildGenerators(config: ContextConfig, only?: string[]): Generat
     new CopilotGenerator(),
     new LlmsTxtGenerator(),
     new KiroGenerator(),
+    new WindsurfGenerator(),
+    new GeminiGenerator(),
   ];
 
   for (const gen of builtIns) {
@@ -87,7 +103,7 @@ export async function runGenerate(
   projectRoot: string,
   options: GenerateOptions = {}
 ): Promise<GenerateResult> {
-  const { dryRun = false, only } = options;
+  const { dryRun = false, only, format = 'text' } = options;
 
   const configFile = options.configPath ?? 'context.config.ts';
   const configPath = path.isAbsolute(configFile) ? configFile : path.join(projectRoot, configFile);
@@ -106,7 +122,35 @@ export async function runGenerate(
   const generators = buildGenerators(config, only);
 
   if (generators.length === 0) {
+    if (format === 'json') {
+      const ir: JsonIROutput = {
+        version: pkg.version,
+        generatedAt: new Date().toISOString(),
+        config,
+        outputs: [],
+      };
+      process.stdout.write(JSON.stringify(ir, null, 2) + '\n');
+      return { writtenFiles: [], errors: [] };
+    }
     info('No generators to run.');
+    return { writtenFiles: [], errors: [] };
+  }
+
+  // JSON IR mode — collect all outputs and write to stdout
+  if (format === 'json') {
+    const outputs: Array<{ path: string; content: string }> = [];
+    for (const gen of generators) {
+      for (const file of gen.generateFiles(config)) {
+        outputs.push(file);
+      }
+    }
+    const ir: JsonIROutput = {
+      version: pkg.version,
+      generatedAt: new Date().toISOString(),
+      config,
+      outputs,
+    };
+    process.stdout.write(JSON.stringify(ir, null, 2) + '\n');
     return { writtenFiles: [], errors: [] };
   }
 

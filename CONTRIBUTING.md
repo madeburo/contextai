@@ -2,6 +2,8 @@
 
 Thanks for your interest in contributing. Here's how to get started.
 
+**Website:** [www.contextai.run](https://www.contextai.run)
+
 ## Setup
 
 ```bash

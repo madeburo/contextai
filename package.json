@@ -1,6 +1,6 @@
 {
   "name": "contextai",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Universal context engineering CLI for AI coding agents — generate AGENTS.md, CLAUDE.md, .cursorrules and more from a single context.config.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -42,13 +42,15 @@
     "cursorrules",
     "llms-txt",
     "typescript",
-    "developer-tools"
+    "developer-tools",
+    "windsurf",
+    "gemini"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/madeburo/contextai.git"
   },
-  "homepage": "https://github.com/madeburo/contextai#readme",
+  "homepage": "https://www.contextai.run",
   "bugs": {
     "url": "https://github.com/madeburo/contextai/issues"
   },
